@@ -151,6 +151,8 @@ body {
   font-size: 0.95rem;
   line-height: 2;
   letter-spacing: 0.01em;
+  /* 長いURLや英単語で横スクロールが発生しないようにする */
+  overflow-wrap: break-word;
 }
 
 .article-body > * + * {
@@ -264,12 +266,14 @@ body {
   padding: 0.1em 0.4em;
 }
 
-.article-body pre.shiki {
+/* 言語指定なしのコードブロック（Shiki対象外のpre）にも同じ枠と横スクロールを適用する */
+.article-body pre {
   font-size: 0.85rem;
   line-height: 1.75;
   padding: 1.3rem 1.4rem;
   border-radius: 6px;
   border: 1px solid var(--c-line);
+  background-color: var(--c-panel);
   overflow-x: auto;
 }
 
@@ -298,6 +302,9 @@ body {
   border-collapse: collapse;
   font-size: 0.88rem;
   line-height: 1.8;
+  /* 幅の広いテーブルはテーブル自身の中で横スクロールさせる */
+  display: block;
+  overflow-x: auto;
 }
 
 .article-body th,

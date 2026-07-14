@@ -3,6 +3,7 @@ import { Head } from 'vite-react-ssg'
 import { DateLabel } from '../components/atoms/DateLabel'
 import { ReadingTime } from '../components/atoms/ReadingTime'
 import { ArticleBody } from '../components/organisms/ArticleBody'
+import { MobileToc } from '../components/organisms/MobileToc'
 import { TableOfContents } from '../components/organisms/TableOfContents'
 import { absoluteUrl, pageTitle, site } from '../config/site'
 import { findPost } from '../lib/posts'
@@ -32,7 +33,7 @@ export function PostPage() {
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <header className="reveal pb-4 pt-12 md:pt-16">
-          <p className="prompt-line text-[12px] text-dim sm:text-[13px]">
+          <p className="prompt-line break-words text-[12px] [overflow-wrap:anywhere] text-dim sm:text-[13px]">
             cat <span className="text-green">./posts/{post.slug}/</span>index.md
           </p>
           <h1 className="glow mt-7 max-w-[44rem] text-2xl font-bold leading-normal text-green sm:text-3xl md:text-[2.1rem]">
@@ -60,7 +61,8 @@ export function PostPage() {
           className="reveal grid gap-12 pb-20 pt-4 lg:grid-cols-[minmax(0,44rem)_1fr]"
           style={{ '--reveal-delay': '150ms' } as React.CSSProperties}
         >
-          <article>
+          <article className="min-w-0">
+            <MobileToc items={post.toc} />
             <ArticleBody html={post.html} />
             <footer className="mt-16 border-t border-dashed border-line pt-7 text-[13px]">
               <p className="text-dim">
