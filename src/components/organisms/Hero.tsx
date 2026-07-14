@@ -4,44 +4,40 @@ interface HeroProps {
   postCount: number
 }
 
-/** トップページの扉。縦書きの標語と署名的な紹介文 */
+/** トップページの扉。シェルセッションが記事索引（lsの出力）へと続く */
 export function Hero({ postCount }: HeroProps) {
   return (
-    <section className="mx-auto flex max-w-5xl items-stretch justify-between gap-8 px-5 pb-16 pt-14 sm:px-8 md:pb-24 md:pt-20">
-      <div className="flex max-w-md flex-col justify-between gap-10">
-        <div>
-          <p className="reveal font-mono text-[11px] tracking-[0.3em] text-vermilion" style={{ '--reveal-delay': '80ms' } as React.CSSProperties}>
-            TECH JOURNAL — 全{postCount}篇
+    <section className="mx-auto max-w-5xl px-5 pb-4 pt-16 sm:px-8 md:pt-24">
+      <h1
+        className="reveal glow text-4xl font-bold tracking-tight text-green sm:text-6xl md:text-7xl"
+        style={{ '--reveal-delay': '60ms' } as React.CSSProperties}
+      >
+        kkito.log
+        <span aria-hidden="true" className="block-cursor" />
+      </h1>
+
+      <div className="mt-12 space-y-6 text-[13px] leading-relaxed sm:text-sm">
+        <div className="reveal" style={{ '--reveal-delay': '350ms' } as React.CSSProperties}>
+          <p className="prompt-line text-dim">whoami</p>
+          <p className="mt-1.5 text-fg">
+            {site.author} — software engineer
           </p>
-          <div className="brush-rule mt-4 h-px w-24 bg-vermilion" />
-          <p className="reveal mt-8 text-sm leading-loose text-ink-soft" style={{ '--reveal-delay': '200ms' } as React.CSSProperties}>
+        </div>
+        <div className="reveal" style={{ '--reveal-delay': '600ms' } as React.CSSProperties}>
+          <p className="prompt-line text-dim">cat about.txt</p>
+          <p className="mt-1.5 max-w-xl leading-loose text-fg">
             {site.description}
             <br />
             マークダウンを一枚置くだけで、頁が増えていく。
           </p>
         </div>
-        <h1
-          className="reveal font-display text-4xl font-black leading-tight tracking-wide md:hidden"
-          style={{ '--reveal-delay': '120ms' } as React.CSSProperties}
-        >
-          {site.tagline}
-        </h1>
-        <a
-          href="#index"
-          className="reveal hidden items-center gap-4 font-mono text-[11px] tracking-[0.3em] text-ink-soft transition-colors hover:text-vermilion md:inline-flex"
-          style={{ '--reveal-delay': '350ms' } as React.CSSProperties}
-        >
-          <span className="scroll-cue" aria-hidden="true" />
-          索引へ
-        </a>
+        <div className="reveal" style={{ '--reveal-delay': '850ms' } as React.CSSProperties}>
+          <p className="prompt-line text-dim">
+            ls -la ./posts/ <span className="text-amber">--sort=date</span>
+          </p>
+          <p className="mt-1.5 text-dim">total {postCount}</p>
+        </div>
       </div>
-      <h1
-        className="vertical-text reveal hidden min-h-[16rem] select-none font-display text-6xl font-black md:block lg:text-7xl"
-        style={{ '--reveal-delay': '120ms' } as React.CSSProperties}
-        aria-label={site.tagline}
-      >
-        {site.tagline}
-      </h1>
     </section>
   )
 }

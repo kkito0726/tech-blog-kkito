@@ -31,53 +31,51 @@ export function PostPage() {
       </Head>
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
-        <header className="reveal py-14 md:py-20">
-          <nav className="font-mono text-[11px] tracking-[0.25em] text-ink-soft">
-            <Link to="/" className="transition-colors hover:text-vermilion">
-              索引
-            </Link>
-            <span aria-hidden="true" className="mx-3 text-vermilion">
-              /
-            </span>
-            <span>本文</span>
-          </nav>
-          <h1 className="mt-8 max-w-[46rem] font-display text-3xl font-black leading-[1.4] tracking-wide sm:text-4xl md:text-[2.75rem]">
+        <header className="reveal pb-4 pt-12 md:pt-16">
+          <p className="prompt-line text-[12px] text-dim sm:text-[13px]">
+            cat <span className="text-green">./posts/{post.slug}/</span>index.md
+          </p>
+          <h1 className="glow mt-7 max-w-[44rem] text-2xl font-bold leading-normal text-green sm:text-3xl md:text-[2.1rem]">
             {post.title}
           </h1>
-          <div className="brush-rule mt-8 h-px w-full max-w-[46rem] bg-line" />
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-ink-soft">
+          <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-dim">
+            <span className="text-xs">--</span>
             <DateLabel date={post.date} />
             <ReadingTime minutes={post.readingMinutes} />
             {post.draft && (
-              <span className="rounded-sm border border-vermilion px-1.5 py-0.5 font-mono text-[10px] tracking-[0.2em] text-vermilion">
-                下書き
+              <span className="rounded-sm border border-amber px-1.5 py-0.5 text-[10px] text-amber">
+                draft
               </span>
             )}
-          </div>
+          </p>
           {post.description && (
-            <p className="mt-6 max-w-[42rem] text-sm leading-loose text-ink-soft">
+            <p className="mt-5 max-w-[40rem] text-[13px] leading-loose text-dim">
               {post.description}
             </p>
           )}
+          <div className="mt-8 max-w-[44rem] border-t border-dashed border-line" />
         </header>
 
-        <div className="reveal grid gap-14 pb-20 lg:grid-cols-[minmax(0,46rem)_1fr]" style={{ '--reveal-delay': '150ms' } as React.CSSProperties}>
+        <div
+          className="reveal grid gap-12 pb-20 pt-4 lg:grid-cols-[minmax(0,44rem)_1fr]"
+          style={{ '--reveal-delay': '150ms' } as React.CSSProperties}
+        >
           <article>
             <ArticleBody html={post.html} />
-            <footer className="mt-20 border-t border-line pt-8">
+            <footer className="mt-16 border-t border-dashed border-line pt-7 text-[13px]">
+              <p className="text-dim">
+                <span aria-hidden="true">EOF</span>
+              </p>
               <Link
                 to="/"
-                className="group inline-flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-ink-soft transition-colors hover:text-vermilion"
+                className="prompt-line mt-4 inline-block text-dim transition-colors hover:text-green"
               >
-                <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">
-                  ←
-                </span>
-                索引へ戻る
+                cd ~<span aria-hidden="true" className="block-cursor" />
               </Link>
             </footer>
           </article>
           <aside className="hidden lg:block">
-            <div className="sticky top-10">
+            <div className="sticky top-20">
               <TableOfContents items={post.toc} />
             </div>
           </aside>

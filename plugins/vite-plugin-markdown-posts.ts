@@ -129,7 +129,7 @@ export function markdownPostsPlugin(): Plugin {
         .use(rehypeCollectToc(toc))
         .use(rehypeResolveImages(images, dirname(filepath), filepath))
         .use(rehypeShiki, {
-          themes: { light: 'kanagawa-lotus', dark: 'kanagawa-dragon' },
+          themes: { light: 'vitesse-light', dark: 'vitesse-dark' },
           defaultColor: false,
           onError: (error) => {
             console.warn(`[markdown-posts] ${filepath}: ハイライトをスキップしました —`, error)

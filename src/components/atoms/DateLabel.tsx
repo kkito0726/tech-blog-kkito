@@ -3,11 +3,11 @@ interface DateLabelProps {
   className?: string
 }
 
-/** 公開日をモノスペース+ドット区切り（2026.07.14）で表示する */
+/** 公開日をISO表記のまま表示する（ターミナルのタイムスタンプ風） */
 export function DateLabel({ date, className = '' }: DateLabelProps) {
   return (
-    <time dateTime={date} className={`font-mono text-xs tracking-[0.18em] ${className}`}>
-      {date.replaceAll('-', '.')}
+    <time dateTime={date} className={`text-xs ${className}`}>
+      {date}
     </time>
   )
 }

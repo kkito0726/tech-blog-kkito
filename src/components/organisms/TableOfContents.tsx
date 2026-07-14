@@ -6,7 +6,7 @@ interface TableOfContentsProps {
   items: readonly TocItem[]
 }
 
-/** 目次。読んでいる位置に朱の栞が付く（EDGE-103: 見出しなしなら非表示） */
+/** 目次。grepの出力風で、読んでいる行が点灯する（EDGE-103: 見出しなしなら非表示） */
 export function TableOfContents({ items }: TableOfContentsProps) {
   const ids = useMemo(() => items.map((item) => item.id), [items])
   const activeId = useActiveHeading(ids)
@@ -14,26 +14,23 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   if (items.length === 0) return null
 
   return (
-    <nav aria-label="目次" className="border-l border-line pl-5">
-      <p className="font-mono text-[11px] tracking-[0.3em] text-ink-soft">目次 ── CONTENTS</p>
-      <ul className="mt-4 space-y-2.5 text-[13px] leading-relaxed">
+    <nav aria-label="目次" className="rounded-md border border-line bg-panel/60 p-5">
+      <p className="prompt-line text-[11px] text-dim">grep &quot;^##&quot; index.md</p>
+      <ul className="mt-4 space-y-2 text-[12px] leading-relaxed">
         {items.map((item) => {
           const isActive = item.id === activeId
           return (
-            <li key={item.id} className={item.depth === 3 ? 'pl-4' : ''}>
+            <li key={item.id}>
               <a
                 href={`#${item.id}`}
-                className={`relative block transition-colors duration-200 ${
-                  isActive ? 'text-vermilion' : 'text-ink-soft hover:text-ink'
+                className={`flex gap-2 transition-colors duration-150 ${
+                  isActive ? 'glow text-green' : 'text-dim hover:text-fg'
                 }`}
               >
-                {isActive && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute -left-[calc(1.25rem+1px)] top-0 h-full w-[2px] bg-vermilion"
-                  />
-                )}
-                {item.text}
+                <span aria-hidden="true" className="flex-none opacity-70">
+                  {item.depth === 2 ? '##' : ' ###'}
+                </span>
+                <span>{item.text}</span>
               </a>
             </li>
           )
