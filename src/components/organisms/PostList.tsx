@@ -21,12 +21,18 @@ export function PostList({ posts }: PostListProps) {
     <section id="index" className="mx-auto max-w-5xl px-5 pt-2 sm:px-8" aria-label="記事一覧">
       <ol
         className="reveal border-b border-line"
-        style={{ '--reveal-delay': '1000ms' } as React.CSSProperties}
+        style={{ '--reveal-delay': '750ms' } as React.CSSProperties}
       >
         {posts.map((post, index) => (
           <PostListItem key={post.slug} post={post} index={index} />
         ))}
       </ol>
+      <p
+        className="reveal pt-5 text-right text-[11px] text-dim"
+        style={{ '--reveal-delay': '900ms' } as React.CSSProperties}
+      >
+        total {posts.length} posts
+      </p>
     </section>
   )
 }

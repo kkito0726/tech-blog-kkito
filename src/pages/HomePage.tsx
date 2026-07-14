@@ -17,7 +17,7 @@ export function HomePage() {
         <meta property="og:site_name" content={site.title} />
         <meta name="twitter:card" content="summary" />
       </Head>
-      <Hero postCount={posts.length} />
+      <Hero />
       <PostList posts={posts} />
     </>
   )

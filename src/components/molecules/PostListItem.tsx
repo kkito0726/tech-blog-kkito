@@ -13,7 +13,7 @@ export function PostListItem({ post, index }: PostListItemProps) {
   return (
     <li
       className="reveal border-t border-line first:border-t-0"
-      style={{ '--reveal-delay': `${index * 110 + 1000}ms` } as React.CSSProperties}
+      style={{ '--reveal-delay': `${index * 110 + 750}ms` } as React.CSSProperties}
     >
       <Link
         to={`/posts/${post.slug}`}
