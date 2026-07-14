@@ -19,7 +19,6 @@
   --c-red: #bf4040;
   --c-shell-contrast: #f2efe6;
   --glow: none;
-  --scanline-opacity: 0.025;
 }
 
 .dark {
@@ -34,7 +33,6 @@
   --c-red: #ff7369;
   --c-shell-contrast: #06110c;
   --glow: 0 0 10px rgba(63, 224, 129, 0.4);
-  --scanline-opacity: 0.06;
 }
 
 @theme inline {
@@ -71,23 +69,6 @@ body {
 ::selection {
   background-color: var(--c-green);
   color: var(--c-shell-contrast);
-}
-
-/* CRTの走査線 */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: var(--scanline-opacity);
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent 0px,
-    transparent 2px,
-    currentColor 2px,
-    currentColor 3px
-  );
 }
 
 /* ブラウン管のわずかな周辺減光（darkのみ） */
