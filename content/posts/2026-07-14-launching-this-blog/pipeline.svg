@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" font-family="'IBM Plex Mono',monospace" font-size="13">
+  <rect width="760" height="180" fill="#f6f0e2"/>
+  <g stroke="#26221b" fill="none" stroke-width="1.5">
+    <rect x="20" y="60" width="150" height="60" rx="4"/>
+    <rect x="230" y="60" width="150" height="60" rx="4"/>
+    <rect x="440" y="60" width="150" height="60" rx="4"/>
+    <rect x="640" y="60" width="100" height="60" rx="4" stroke="#c73e2c"/>
+  </g>
+  <g fill="#26221b" text-anchor="middle">
+    <text x="95" y="85">index.md</text>
+    <text x="95" y="105" font-size="10" fill="#7a7261">git push</text>
+    <text x="305" y="85">GitHub Actions</text>
+    <text x="305" y="105" font-size="10" fill="#7a7261">検証・変換</text>
+    <text x="515" y="85">vite-react-ssg</text>
+    <text x="515" y="105" font-size="10" fill="#7a7261">静的HTML生成</text>
+    <text x="690" y="85" fill="#c73e2c">Pages</text>
+    <text x="690" y="105" font-size="10" fill="#7a7261">公開</text>
+  </g>
+  <g stroke="#c73e2c" stroke-width="1.5" fill="#c73e2c">
+    <line x1="170" y1="90" x2="222" y2="90"/>
+    <path d="M222 90 l-8 -4 v8 z"/>
+    <line x1="380" y1="90" x2="432" y2="90"/>
+    <path d="M432 90 l-8 -4 v8 z"/>
+    <line x1="590" y1="90" x2="632" y2="90"/>
+    <path d="M632 90 l-8 -4 v8 z"/>
+  </g>
+</svg>
