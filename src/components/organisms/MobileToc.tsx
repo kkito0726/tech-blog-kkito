@@ -11,8 +11,13 @@ export function MobileToc({ items }: MobileTocProps) {
 
   return (
     <details className="group mb-10 rounded-md border border-line bg-panel/60 lg:hidden">
-      <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-[12px] text-dim [&::-webkit-details-marker]:hidden">
-        <span className="prompt-line">grep &quot;^##&quot; index.md</span>
+      <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="flex items-baseline gap-2">
+          <span className="text-sm font-bold text-green">目次</span>
+          <span className="text-[10px] text-dim opacity-70">
+            grep &quot;^##&quot; index.md
+          </span>
+        </span>
         <span
           aria-hidden="true"
           className="text-green transition-transform duration-200 group-open:rotate-90"

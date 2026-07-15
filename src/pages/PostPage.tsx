@@ -33,10 +33,17 @@ export function PostPage() {
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <header className="reveal pb-4 pt-10 md:pt-12">
-          <p className="prompt-line break-words text-[12px] [overflow-wrap:anywhere] text-dim sm:text-[13px]">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-[13px] text-dim transition-colors hover:text-green"
+          >
+            <span aria-hidden="true">←</span>
+            記事一覧に戻る
+          </Link>
+          <p className="prompt-line mt-4 break-words text-[11px] opacity-60 [overflow-wrap:anywhere] text-dim sm:text-[12px]">
             cat <span className="text-green">./posts/{post.slug}/</span>index.md
           </p>
-          <h1 className="glow mt-5 max-w-[42rem] text-xl font-bold leading-snug text-green sm:text-2xl md:text-[1.75rem]">
+          <h1 className="glow mt-3 max-w-[42rem] text-xl font-bold leading-snug text-green sm:text-2xl md:text-[1.75rem]">
             {post.title}
           </h1>
           <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-dim">
@@ -64,15 +71,15 @@ export function PostPage() {
           <article className="min-w-0">
             <MobileToc items={post.toc} />
             <ArticleBody html={post.html} />
-            <footer className="mt-12 border-t border-dashed border-line pt-6 text-[13px]">
-              <p className="text-dim">
-                <span aria-hidden="true">EOF</span>
-              </p>
+            <footer className="mt-12 border-t border-dashed border-line pt-6">
               <Link
                 to="/"
-                className="prompt-line mt-4 inline-block text-dim transition-colors hover:text-green"
+                className="group inline-flex items-center gap-2 rounded border border-line px-4 py-2 text-[13px] text-dim transition-colors hover:border-green hover:text-green"
               >
-                cd ~<span aria-hidden="true" className="block-cursor" />
+                <span aria-hidden="true" className="transition-transform group-hover:-translate-x-0.5">
+                  ←
+                </span>
+                記事一覧に戻る
               </Link>
             </footer>
           </article>
