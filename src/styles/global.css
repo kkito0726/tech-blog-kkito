@@ -1,0 +1,326 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================
+   カラートークン — 「phosphor terminal」
+   蓄光グリーンのCRTターミナル（dark）と
+   印刷されたmanページ（light）
+   ============================================ */
+:root {
+  --c-shell: #f2efe6;
+  --c-panel: #e8e4d5;
+  --c-fg: #26322c;
+  --c-dim: #6e7a71;
+  --c-line: #d2cebc;
+  --c-green: #0c7c4c;
+  --c-green-wash: rgba(12, 124, 76, 0.09);
+  --c-amber: #a06508;
+  --c-red: #bf4040;
+  --c-shell-contrast: #f2efe6;
+  --glow: none;
+}
+
+.dark {
+  --c-shell: #0a0f0d;
+  --c-panel: #101915;
+  --c-fg: #c6d5cb;
+  --c-dim: #58685f;
+  --c-line: #1d2b24;
+  --c-green: #3fe081;
+  --c-green-wash: rgba(63, 224, 129, 0.09);
+  --c-amber: #f0b357;
+  --c-red: #ff7369;
+  --c-shell-contrast: #06110c;
+  --glow: 0 0 10px rgba(63, 224, 129, 0.4);
+}
+
+@theme inline {
+  --color-shell: var(--c-shell);
+  --color-panel: var(--c-panel);
+  --color-fg: var(--c-fg);
+  --color-dim: var(--c-dim);
+  --color-line: var(--c-line);
+  --color-green: var(--c-green);
+  --color-green-wash: var(--c-green-wash);
+  --color-amber: var(--c-amber);
+  --color-red: var(--c-red);
+  --color-shell-contrast: var(--c-shell-contrast);
+  --font-mono:
+    'JetBrains Mono', 'M PLUS 1 Code', ui-monospace, 'SFMono-Regular', 'Hiragino Kaku Gothic ProN',
+    monospace;
+}
+
+html {
+  background-color: var(--c-shell);
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mono);
+  color: var(--c-fg);
+  background-color: var(--c-shell);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+::selection {
+  background-color: var(--c-green);
+  color: var(--c-shell-contrast);
+}
+
+/* ブラウン管のわずかな周辺減光（darkのみ） */
+.dark body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.32) 100%);
+}
+
+/* 蓄光の滲み */
+.glow {
+  text-shadow: var(--glow);
+}
+
+/* ============================================
+   カーソルと登場アニメーション
+   ============================================ */
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.block-cursor::after {
+  content: '▊';
+  margin-left: 0.15em;
+  color: var(--c-green);
+  animation: blink 1.1s steps(1) infinite;
+  text-shadow: var(--glow);
+}
+
+@keyframes type-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  animation: type-in 0.45s ease-out both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    animation: none;
+  }
+  .block-cursor::after {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* シェルのプロンプト行 */
+.prompt-line::before {
+  content: '$ ';
+  color: var(--c-green);
+  text-shadow: var(--glow);
+}
+
+/* ============================================
+   記事本文（.article-body）
+   マークダウンのソースを開いたままの佇まい
+   ============================================ */
+.article-body {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  /* 長いURLや英単語で横スクロールが発生しないようにする */
+  overflow-wrap: break-word;
+}
+
+.article-body > * + * {
+  margin-top: 1.25em;
+}
+
+.article-body h2,
+.article-body h3 {
+  color: var(--c-green);
+  text-shadow: var(--glow);
+  font-weight: 700;
+  line-height: 1.6;
+  scroll-margin-top: 5rem;
+}
+
+.article-body h2 {
+  font-size: 1.0625rem;
+  margin-top: 2.6rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--c-line);
+}
+
+.article-body h2::before {
+  content: '## ';
+  color: var(--c-dim);
+  text-shadow: none;
+}
+
+.article-body h3 {
+  font-size: 0.975rem;
+  margin-top: 2rem;
+}
+
+.article-body h3::before {
+  content: '### ';
+  color: var(--c-dim);
+  text-shadow: none;
+}
+
+.article-body a {
+  color: var(--c-green);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.article-body a:hover {
+  background-color: var(--c-green-wash);
+}
+
+.article-body strong {
+  color: var(--c-amber);
+  font-weight: 700;
+}
+
+.article-body ul,
+.article-body ol {
+  padding-left: 1.6em;
+}
+
+.article-body li + li {
+  margin-top: 0.35em;
+}
+
+.article-body ul > li {
+  list-style: none;
+  position: relative;
+}
+
+.article-body ul > li::before {
+  content: '-';
+  position: absolute;
+  left: -1.6em;
+  color: var(--c-green);
+}
+
+.article-body ol {
+  counter-reset: item;
+}
+
+.article-body ol > li {
+  list-style: none;
+  position: relative;
+  counter-increment: item;
+}
+
+.article-body ol > li::before {
+  content: counter(item) '.';
+  position: absolute;
+  left: -1.6em;
+  color: var(--c-green);
+}
+
+.article-body blockquote {
+  border-left: 2px solid var(--c-dim);
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  color: var(--c-dim);
+}
+
+.article-body blockquote::before {
+  content: none;
+}
+
+.article-body code:not(pre code) {
+  font-size: 0.9em;
+  color: var(--c-amber);
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+}
+
+/* 言語指定なしのコードブロック（Shiki対象外のpre）にも同じ枠と横スクロールを適用する */
+.article-body pre {
+  font-size: 0.825rem;
+  line-height: 1.7;
+  padding: 1.1rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid var(--c-line);
+  background-color: var(--c-panel);
+  overflow-x: auto;
+}
+
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
+.article-body img {
+  display: block;
+  max-width: 100%;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  margin: 1.6rem auto;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  /* 幅の広いテーブルはテーブル自身の中で横スクロールさせる */
+  display: block;
+  overflow-x: auto;
+}
+
+.article-body th,
+.article-body td {
+  border: 1px solid var(--c-line);
+  padding: 0.45rem 0.85rem;
+  text-align: left;
+}
+
+.article-body th {
+  color: var(--c-green);
+  background-color: var(--c-panel);
+}
+
+.article-body hr {
+  border: none;
+  border-top: 1px dashed var(--c-line);
+  margin: 2.4rem 0;
+}
