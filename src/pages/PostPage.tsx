@@ -32,14 +32,14 @@ export function PostPage() {
       </Head>
 
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
-        <header className="reveal pb-4 pt-12 md:pt-16">
+        <header className="reveal pb-4 pt-10 md:pt-12">
           <p className="prompt-line break-words text-[12px] [overflow-wrap:anywhere] text-dim sm:text-[13px]">
             cat <span className="text-green">./posts/{post.slug}/</span>index.md
           </p>
-          <h1 className="glow mt-7 max-w-[44rem] text-2xl font-bold leading-normal text-green sm:text-3xl md:text-[2.1rem]">
+          <h1 className="glow mt-5 max-w-[42rem] text-xl font-bold leading-snug text-green sm:text-2xl md:text-[1.75rem]">
             {post.title}
           </h1>
-          <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-dim">
+          <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-dim">
             <span className="text-xs">--</span>
             <DateLabel date={post.date} />
             <ReadingTime minutes={post.readingMinutes} />
@@ -50,21 +50,21 @@ export function PostPage() {
             )}
           </p>
           {post.description && (
-            <p className="mt-5 max-w-[40rem] text-[13px] leading-loose text-dim">
+            <p className="mt-4 max-w-[40rem] text-[13px] leading-loose text-dim">
               {post.description}
             </p>
           )}
-          <div className="mt-8 max-w-[44rem] border-t border-dashed border-line" />
+          <div className="mt-6 max-w-[42rem] border-t border-dashed border-line" />
         </header>
 
         <div
-          className="reveal grid gap-12 pb-20 pt-4 lg:grid-cols-[minmax(0,44rem)_1fr]"
+          className="reveal grid gap-10 pb-16 pt-3 lg:grid-cols-[minmax(0,42rem)_1fr]"
           style={{ '--reveal-delay': '150ms' } as React.CSSProperties}
         >
           <article className="min-w-0">
             <MobileToc items={post.toc} />
             <ArticleBody html={post.html} />
-            <footer className="mt-16 border-t border-dashed border-line pt-7 text-[13px]">
+            <footer className="mt-12 border-t border-dashed border-line pt-6 text-[13px]">
               <p className="text-dim">
                 <span aria-hidden="true">EOF</span>
               </p>

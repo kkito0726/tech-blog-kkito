@@ -148,15 +148,15 @@ body {
    マークダウンのソースを開いたままの佇まい
    ============================================ */
 .article-body {
-  font-size: 0.95rem;
-  line-height: 2;
+  font-size: 0.9375rem;
+  line-height: 1.85;
   letter-spacing: 0.01em;
   /* 長いURLや英単語で横スクロールが発生しないようにする */
   overflow-wrap: break-word;
 }
 
 .article-body > * + * {
-  margin-top: 1.4em;
+  margin-top: 1.25em;
 }
 
 .article-body h2,
@@ -164,14 +164,14 @@ body {
   color: var(--c-green);
   text-shadow: var(--glow);
   font-weight: 700;
-  line-height: 1.7;
+  line-height: 1.6;
   scroll-margin-top: 5rem;
 }
 
 .article-body h2 {
-  font-size: 1.2rem;
-  margin-top: 3.2rem;
-  padding-top: 2rem;
+  font-size: 1.0625rem;
+  margin-top: 2.6rem;
+  padding-top: 1.5rem;
   border-top: 1px dashed var(--c-line);
 }
 
@@ -182,8 +182,8 @@ body {
 }
 
 .article-body h3 {
-  font-size: 1.05rem;
-  margin-top: 2.4rem;
+  font-size: 0.975rem;
+  margin-top: 2rem;
 }
 
 .article-body h3::before {
@@ -268,9 +268,9 @@ body {
 
 /* 言語指定なしのコードブロック（Shiki対象外のpre）にも同じ枠と横スクロールを適用する */
 .article-body pre {
-  font-size: 0.85rem;
-  line-height: 1.75;
-  padding: 1.3rem 1.4rem;
+  font-size: 0.825rem;
+  line-height: 1.7;
+  padding: 1.1rem 1.2rem;
   border-radius: 6px;
   border: 1px solid var(--c-line);
   background-color: var(--c-panel);
@@ -294,7 +294,7 @@ body {
   max-width: 100%;
   border: 1px solid var(--c-line);
   border-radius: 6px;
-  margin: 2rem auto;
+  margin: 1.6rem auto;
 }
 
 .article-body table {
@@ -322,5 +322,5 @@ body {
 .article-body hr {
   border: none;
   border-top: 1px dashed var(--c-line);
-  margin: 3rem 0;
+  margin: 2.4rem 0;
 }

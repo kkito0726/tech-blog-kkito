@@ -17,7 +17,7 @@ export function PostListItem({ post, index }: PostListItemProps) {
     >
       <Link
         to={`/posts/${post.slug}`}
-        className="group relative block py-6 pl-5 transition-colors duration-200 hover:bg-green-wash sm:pl-7 md:py-7"
+        className="group relative block py-5 pl-5 transition-colors duration-200 hover:bg-green-wash sm:pl-7 md:py-6"
       >
         <span
           aria-hidden="true"
@@ -38,11 +38,11 @@ export function PostListItem({ post, index }: PostListItemProps) {
             </span>
           )}
         </p>
-        <h2 className="mt-2.5 text-lg font-bold leading-snug text-fg transition-colors duration-200 group-hover:text-green sm:text-xl">
+        <h2 className="mt-2 text-base font-bold leading-snug text-fg transition-colors duration-200 group-hover:text-green sm:text-lg">
           <span className="group-hover:glow">{post.title}</span>
         </h2>
         {post.description && (
-          <p className="mt-2.5 line-clamp-2 max-w-[40rem] text-[13px] leading-relaxed text-dim">
+          <p className="mt-2 line-clamp-2 max-w-[40rem] text-[13px] leading-relaxed text-dim">
             {post.description}
           </p>
         )}

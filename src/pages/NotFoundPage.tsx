@@ -10,7 +10,7 @@ export function NotFoundPage() {
         <meta name="robots" content="noindex" />
       </Head>
       <section className="mx-auto max-w-5xl px-5 py-24 sm:px-8 md:py-32">
-        <p className="reveal glow text-6xl font-bold text-red sm:text-8xl">404</p>
+        <p className="reveal glow text-5xl font-bold text-red sm:text-6xl">404</p>
         <div
           className="reveal mt-10 space-y-5 text-[13px] leading-relaxed sm:text-sm"
           style={{ '--reveal-delay': '250ms' } as React.CSSProperties}
