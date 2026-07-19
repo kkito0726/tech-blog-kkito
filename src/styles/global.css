@@ -265,16 +265,20 @@ body {
   overflow-x: auto;
 }
 
+/*
+ * Shikiはトークンごとに span を吐く。ここで background-color を指定すると
+ * テーマ側の背景色（ライトは #ffffff）が文字の部分にだけ乗ってしまい、
+ * サイトのパネル色と食い違うため、文字色のみを適用する。
+ * コードブロックの背景は .article-body pre の --c-panel に任せる。
+ */
 .shiki,
 .shiki span {
   color: var(--shiki-light);
-  background-color: var(--shiki-light-bg);
 }
 
 .dark .shiki,
 .dark .shiki span {
   color: var(--shiki-dark);
-  background-color: var(--shiki-dark-bg);
 }
 
 .article-body img {
