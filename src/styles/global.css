@@ -11,11 +11,12 @@
   --c-shell: #f2efe6;
   --c-panel: #e8e4d5;
   --c-fg: #26322c;
-  --c-dim: #6e7a71;
+  /* dim・amberはコントラスト比4.5:1（WCAG AA）を満たす値にしている */
+  --c-dim: #5f6a63;
   --c-line: #d2cebc;
   --c-green: #0c7c4c;
   --c-green-wash: rgba(12, 124, 76, 0.09);
-  --c-amber: #a06508;
+  --c-amber: #8f5a07;
   --c-red: #bf4040;
   --c-shell-contrast: #f2efe6;
   --glow: none;
@@ -25,7 +26,7 @@
   --c-shell: #0a0f0d;
   --c-panel: #101915;
   --c-fg: #c6d5cb;
-  --c-dim: #58685f;
+  --c-dim: #75887d;
   --c-line: #1d2b24;
   --c-green: #3fe081;
   --c-green-wash: rgba(63, 224, 129, 0.09);
@@ -69,6 +70,13 @@ body {
 ::selection {
   background-color: var(--c-green);
   color: var(--c-shell-contrast);
+}
+
+/* キーボード操作時のフォーカス表示。ブラウザ既定の青は配色から浮くため上書きする */
+:focus-visible {
+  outline: 2px solid var(--c-green);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ブラウン管のわずかな周辺減光（darkのみ） */

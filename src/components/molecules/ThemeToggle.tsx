@@ -10,7 +10,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え'}
-      className="group flex items-center gap-2 rounded border border-line px-3 py-1.5 text-dim transition-colors duration-200 hover:border-green hover:text-green"
+      className="group flex flex-none items-center gap-2 whitespace-nowrap rounded border border-line px-3 py-1.5 text-dim transition-colors duration-200 hover:border-green hover:text-green"
     >
       <span
         aria-hidden="true"
@@ -18,7 +18,10 @@ export function ThemeToggle() {
           isDark ? 'bg-current' : 'bg-transparent'
         }`}
       />
-      <span className="text-[12px]">{isDark ? 'ダークモード' : 'ライトモード'}</span>
+      {/* 320px級の狭い画面ではラベルを省き、丸インジケーターだけにする（説明はaria-labelが担う） */}
+      <span className="hidden text-[12px] min-[360px]:inline">
+        {isDark ? 'ダークモード' : 'ライトモード'}
+      </span>
     </button>
   )
 }
