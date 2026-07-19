@@ -297,6 +297,34 @@ body {
   margin: 1.6rem auto;
 }
 
+.article-body .mermaid-diagram {
+  margin: 1.6rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  padding: 1.25rem;
+  background-color: var(--c-panel);
+}
+
+.article-body .mermaid-diagram svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body .mermaid-diagram-dark {
+  display: none;
+}
+
+.dark .article-body .mermaid-diagram-light {
+  display: none;
+}
+
+.dark .article-body .mermaid-diagram-dark {
+  display: block;
+}
+
 .article-body table {
   width: 100%;
   border-collapse: collapse;

@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import rehypeShiki from '@shikijs/rehype'
 import matter from 'gray-matter'
-import type { Element, Root } from 'hast'
+import type { Element, Root, Text } from 'hast'
 import { toString as hastToString } from 'hast-util-to-string'
 import rehypeSlug from 'rehype-slug'
 import rehypeStringify from 'rehype-stringify'
@@ -14,10 +14,12 @@ import { visit } from 'unist-util-visit'
 import type { Plugin } from 'vite'
 import { z } from 'zod'
 import type { PostFrontmatter, TocItem } from '../src/types/post'
+import { buildMermaidWrapperHtml, renderMermaidDiagrams } from './mermaid-renderer'
 
 const POST_FILE_PATTERN = /\/content\/posts\/[^/]+\/index\.md$/
 const RELATIVE_SRC_PATTERN = /^\.\.?\//
 const IMAGE_PLACEHOLDER = (index: number) => `__BLOG_IMG_${index}__`
+const MERMAID_PLACEHOLDER = (index: number) => `__BLOG_MERMAID_${index}__`
 /** 日本語テックブログの平均的な読了速度（文字/分） */
 const CHARS_PER_MINUTE = 550
 
@@ -89,6 +91,33 @@ function rehypeResolveImages(images: string[], markdownDir: string, file: string
   }
 }
 
+/**
+ * ```mermaid コードブロックを抽出し、プレースホルダーのテキストノードに置き換える
+ * rehypeプラグイン。実際のSVG化はunifiedのパイプライン外（非同期）で行うため、
+ * ここではソースコードの回収と印付けのみを行う。
+ */
+function rehypeExtractMermaid(diagrams: string[]) {
+  return () => (tree: Root) => {
+    visit(tree, 'element', (node: Element, index, parent) => {
+      if (node.tagName !== 'pre' || !parent || typeof index !== 'number') return
+      const codeChild = node.children.find(
+        (child): child is Element => child.type === 'element' && child.tagName === 'code',
+      )
+      const classNames = codeChild?.properties?.className
+      const isMermaid = Array.isArray(classNames) && classNames.includes('language-mermaid')
+      if (!codeChild || !isMermaid) return
+
+      const textChild = codeChild.children.find(
+        (child): child is Text => child.type === 'text',
+      )
+      const diagramIndex = diagrams.length
+      diagrams.push(textChild?.value ?? '')
+      const placeholder: Text = { type: 'text', value: MERMAID_PLACEHOLDER(diagramIndex) }
+      parent.children[index] = placeholder
+    })
+  }
+}
+
 function estimateReadingMinutes(markdownBody: string): number {
   const plainLength = markdownBody.replace(/\s/g, '').length
   return Math.max(1, Math.round(plainLength / CHARS_PER_MINUTE))
@@ -120,6 +149,7 @@ export function markdownPostsPlugin(): Plugin {
       const frontmatter = parseFrontmatter(data, filepath)
       const toc: TocItem[] = []
       const images: string[] = []
+      const diagrams: string[] = []
 
       const processed = await unified()
         .use(remarkParse)
@@ -128,6 +158,7 @@ export function markdownPostsPlugin(): Plugin {
         .use(rehypeSlug)
         .use(rehypeCollectToc(toc))
         .use(rehypeResolveImages(images, dirname(filepath), filepath))
+        .use(rehypeExtractMermaid(diagrams))
         .use(rehypeShiki, {
           themes: { light: 'vitesse-light', dark: 'vitesse-dark' },
           defaultColor: false,
@@ -138,6 +169,19 @@ export function markdownPostsPlugin(): Plugin {
         .use(rehypeStringify)
         .process(content)
 
+      let htmlString = String(processed)
+      if (diagrams.length > 0) {
+        const { light, dark } = await renderMermaidDiagrams(diagrams, filepath)
+        htmlString = diagrams.reduce(
+          (html, _source, index) =>
+            html.replaceAll(
+              MERMAID_PLACEHOLDER(index),
+              buildMermaidWrapperHtml(light[index], dark[index]),
+            ),
+          htmlString,
+        )
+      }
+
       const imports = images
         .map((src, index) => `import __blogImg${index} from ${JSON.stringify(src)};`)
         .join('\n')
@@ -147,7 +191,7 @@ export function markdownPostsPlugin(): Plugin {
         `export const frontmatter = ${JSON.stringify(frontmatter)};`,
         `export const toc = ${JSON.stringify(toc)};`,
         `export const readingMinutes = ${estimateReadingMinutes(content)};`,
-        `export const html = ${buildHtmlExpression(String(processed))};`,
+        `export const html = ${buildHtmlExpression(htmlString)};`,
       ]
         .filter(Boolean)
         .join('\n')
