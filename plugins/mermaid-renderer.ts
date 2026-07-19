@@ -11,8 +11,8 @@ import type { MermaidConfig } from 'mermaid'
  * ワークフロー間に永続化する必要がある（デプロイワークフロー整備時に対応）。
  */
 const CACHE_DIR = resolve(process.cwd(), 'node_modules/.cache/mermaid-diagrams')
-/** テーマ配色を変更した際はここを更新し、古いキャッシュを無効化する */
-const CACHE_VERSION = 'v1'
+/** テーマ配色やSVGの後処理を変更した際はここを更新し、古いキャッシュを無効化する */
+const CACHE_VERSION = 'v2'
 
 type ThemeMode = 'light' | 'dark'
 
@@ -25,16 +25,16 @@ const PALETTE: Record<ThemeMode, Record<string, string>> = {
     shell: '#f2efe6',
     panel: '#e8e4d5',
     fg: '#26322c',
-    dim: '#6e7a71',
+    dim: '#5f6a63',
     line: '#d2cebc',
     green: '#0c7c4c',
-    amber: '#a06508',
+    amber: '#8f5a07',
   },
   dark: {
     shell: '#0a0f0d',
     panel: '#101915',
     fg: '#c6d5cb',
-    dim: '#58685f',
+    dim: '#75887d',
     line: '#1d2b24',
     green: '#3fe081',
     amber: '#f0b357',
@@ -89,9 +89,26 @@ function getRenderer() {
   return renderer
 }
 
-function cacheKey(source: string, mode: ThemeMode): string {
-  const hash = createHash('sha256').update(CACHE_VERSION).update(mode).update(source).digest('hex')
+function diagramHash(source: string, mode: ThemeMode): string {
+  return createHash('sha256').update(CACHE_VERSION).update(mode).update(source).digest('hex')
+}
+
+function cachePath(hash: string): string {
   return resolve(CACHE_DIR, `${hash}.svg`)
+}
+
+/**
+ * SVGのid（既定では mermaid-0 など）を図ごとに一意な値へ書き換える。
+ *
+ * Mermaidが生成するSVGは内部に <style> を持ち、`#mermaid-0 .node rect { fill: ... }`
+ * のように自分のidで規則を限定している。ライト用とダーク用、あるいは複数の図で
+ * idが重複すると、DOM上あとに現れたSVGの規則が先のSVGにも適用され、配色が壊れる。
+ * バッチやキャッシュの状況に関係なく一意にするため、内容のハッシュからidを作る。
+ */
+function makeIdsUnique(svg: string, hash: string): string {
+  const matched = /<svg[^>]*\bid="([^"]+)"/.exec(svg)
+  if (!matched) return svg
+  return svg.replaceAll(matched[1], `mmd-${hash.slice(0, 12)}`)
 }
 
 function readCache(path: string): string | null {
@@ -114,7 +131,8 @@ function describeReason(reason: unknown): string {
 
 /** 指定テーマの未キャッシュ分だけレンダリングし、結果をキャッシュへ書き込む */
 async function renderTheme(diagrams: string[], mode: ThemeMode, file: string): Promise<string[]> {
-  const paths = diagrams.map((source) => cacheKey(source, mode))
+  const hashes = diagrams.map((source) => diagramHash(source, mode))
+  const paths = hashes.map(cachePath)
   const results = paths.map((path) => readCache(path))
 
   const missingIndexes = results.reduce<number[]>((acc, cached, index) => {
@@ -134,8 +152,9 @@ async function renderTheme(diagrams: string[], mode: ThemeMode, file: string): P
             `${describeReason(settled.reason)}\n  diagram: ${snippet(diagrams[diagramIndex])}`,
         )
       }
-      results[diagramIndex] = settled.value.svg
-      writeCache(paths[diagramIndex], settled.value.svg)
+      const svg = makeIdsUnique(settled.value.svg, hashes[diagramIndex])
+      results[diagramIndex] = svg
+      writeCache(paths[diagramIndex], svg)
     })
   }
 
