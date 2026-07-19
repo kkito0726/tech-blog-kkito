@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { site } from '../../config/site'
+import { GitHubIcon } from '../atoms/GitHubIcon'
 import { ThemeToggle } from '../molecules/ThemeToggle'
 
 /** ターミナルウィンドウのタイトルバー */
@@ -18,7 +20,18 @@ export function SiteHeader() {
             <span className="text-fg">~</span>
           </Link>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-3">
+          <a
+            href={site.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${site.author} のGitHubアカウント`}
+            className="text-dim transition-colors duration-200 hover:text-green"
+          >
+            <GitHubIcon className="h-5 w-5" />
+          </a>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   )
