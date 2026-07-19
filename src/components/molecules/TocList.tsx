@@ -19,14 +19,11 @@ export function TocList({ items }: TocListProps) {
           <li key={item.id}>
             <a
               href={`#${item.id}`}
-              className={`flex gap-2 transition-colors duration-150 ${
-                isActive ? 'glow text-green' : 'text-dim hover:text-fg'
-              }`}
+              className={`block transition-colors duration-150 ${
+                item.depth === 3 ? 'pl-4' : ''
+              } ${isActive ? 'glow text-green' : 'text-dim hover:text-fg'}`}
             >
-              <span aria-hidden="true" className="flex-none opacity-70">
-                {item.depth === 2 ? '##' : ' ###'}
-              </span>
-              <span>{item.text}</span>
+              {item.text}
             </a>
           </li>
         )
