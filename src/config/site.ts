@@ -5,7 +5,10 @@ export const site = {
   description: 'Vite + React で自作した静的ブログ。Web技術の実験と記録。',
   author: 'kkito',
   siteUrl: 'https://kkito0726.github.io/tech-blog-kkito/',
+  /** このブログのソースコード（フッターのリンク先） */
   repositoryUrl: 'https://github.com/kkito0726/tech-blog-kkito',
+  /** 著者のGitHubアカウント（ヘッダーのアイコンのリンク先） */
+  githubUrl: 'https://github.com/kkito0726',
 } as const
 
 /** ページタイトルを「記事名 | サイト名」形式で組み立てる */
