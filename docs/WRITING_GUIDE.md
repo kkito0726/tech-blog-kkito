@@ -139,9 +139,10 @@ npm run build && npm run preview
 3. `npm run dev` で見た目を確認
 4. `npm run build` でビルドが通ることを確認
 5. コミット（`docs: 「<タイトル>」の記事を追加`）してPRを作成（[CONTRIBUTING.md](CONTRIBUTING.md) 参照）
-6. マージ後、ローカルの `main` を同期
+6. PRをマージすると、`main` への反映をトリガーに GitHub Actions（[.github/workflows/deploy.yml](../.github/workflows/deploy.yml)）が自動でビルド & GitHub Pages へデプロイする。数分後にサイトへ反映される
+7. マージ後、ローカルの `main` を同期
 
-> **現状の制約**: `main` へのマージ後にGitHub Pagesへ自動デプロイするワークフローは未整備（別タスクで対応予定）。当面は手元で `npm run build` の成功を確認するところまでが「公開準備完了」の基準になる。
+> **ポイント**: 自動デプロイはビルドが成功したときだけ実行される。frontmatterの不備・画像の欠落・Mermaid構文エラーなどでビルドが失敗した場合はデプロイされず、既存の公開サイトはそのまま維持される。だからこそ、PRを出す前に手元で `npm run build` が通ることを必ず確認しておく。
 
 ## 9. よくあるビルドエラーと対処法
 
