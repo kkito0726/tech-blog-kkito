@@ -1,0 +1,83 @@
+name: Deploy to GitHub Pages
+
+# main への push で自動ビルド & デプロイ（手動実行も可能）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages へのデプロイに必要な最小権限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時実行を1つに絞る。進行中のデプロイはキャンセルせず走らせ切る
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Playwright(Chromium) は Mermaid 図の SVG 化に使う。
+      # ブラウザバイナリのダウンロードをキャッシュしてビルドを高速化する。
+      # npm ci の postinstall (playwright install) より前に復元する必要がある。
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      # 依存インストール。postinstall で playwright install --with-deps chromium が走る
+      - name: Install dependencies
+        run: npm ci
+
+      # 変更のない Mermaid 図の再レンダリングを避けるための SVG キャッシュ。
+      # npm ci が node_modules を作り直すため、インストール後に復元する。
+      # content が変わっても restore-keys で直近のキャッシュを引き継ぎ、
+      # 差分の図だけを再レンダリングする。
+      - name: Cache rendered Mermaid diagrams
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/mermaid-diagrams
+          key: mermaid-${{ hashFiles('content/posts/**/*.md') }}
+          restore-keys: |
+            mermaid-
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          # Pages が未設定でもワークフロー側で有効化を試みる
+          enablement: true
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
