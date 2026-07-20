@@ -3,6 +3,7 @@ import {
   assertUniqueSlugs,
   deriveSlug,
   excludeDrafts,
+  isRootRelativeHref,
   sortPostsByDateDesc,
 } from '../src/lib/postCollection'
 
@@ -76,5 +77,24 @@ describe('excludeDrafts', () => {
 
   it('開発時（includeDrafts=true）はdraftも含む', () => {
     expect(excludeDrafts(entries, true)).toHaveLength(2)
+  })
+})
+
+describe('isRootRelativeHref', () => {
+  it('ルート相対リンクを検出する（baseが付かず本番で404になるため）', () => {
+    expect(isRootRelativeHref('/posts/foo/')).toBe(true)
+    expect(isRootRelativeHref('/')).toBe(true)
+  })
+
+  it('相対パスは許可する', () => {
+    expect(isRootRelativeHref('../foo/')).toBe(false)
+    expect(isRootRelativeHref('./image.png')).toBe(false)
+  })
+
+  it('外部URL・プロトコル相対・アンカーは許可する', () => {
+    expect(isRootRelativeHref('https://example.com/posts/')).toBe(false)
+    expect(isRootRelativeHref('//example.com/posts/')).toBe(false)
+    expect(isRootRelativeHref('#heading')).toBe(false)
+    expect(isRootRelativeHref('mailto:a@example.com')).toBe(false)
   })
 })

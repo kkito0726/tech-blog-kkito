@@ -44,6 +44,18 @@ export function sortPostsByDateDesc<T extends SortableEntry>(entries: readonly T
   })
 }
 
+/**
+ * 本番で404になるルート相対リンク（/posts/... など）かどうかを判定する。
+ *
+ * このサイトはGitHub Pagesのサブパス（/tech-blog-kkito/）配信だが、
+ * Markdownに直接書いたリンクにはViteのbaseが付かないため、
+ * ルート相対で書くとドメイン直下を指してしまい本番でだけ壊れる。
+ * プロトコル相対（//example.com）は外部リンクなので対象外。
+ */
+export function isRootRelativeHref(href: string): boolean {
+  return href.startsWith('/') && !href.startsWith('//')
+}
+
 /** draft記事を除外した新しい配列を返す。includeDraftsがtrue（開発時）はそのまま返す（REQ-102） */
 export function excludeDrafts<T extends { draft: boolean }>(
   entries: readonly T[],
