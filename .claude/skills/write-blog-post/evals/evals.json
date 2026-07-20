@@ -1,0 +1,48 @@
+{
+  "skill_name": "write-blog-post",
+  "evals": [
+    {
+      "id": 0,
+      "name": "known-topic-with-verifiable-facts",
+      "prompt": "このブログで使っているShikiによるシンタックスハイライトについて記事を書いてください。ビルド時に色付けしているのでクライアントにJSを送らなくて済む、という話を中心にしたいです。",
+      "expected_output": "content/posts/配下に1記事1フォルダで記事が作られ、frontmatterが正しく、実際のリポジトリの実装（vite-plugin-markdown-posts.tsのShiki設定など）に基づいた正確な内容になっている。ビルドが通り、太字崩れがない。",
+      "files": [],
+      "assertions": [
+        "content/posts/YYYY-MM-DD-<slug>/index.md の形式（1記事1フォルダ・ファイル名index.md）で作られている",
+        "frontmatterに title と date が存在し、date が YYYY-MM-DD 形式である",
+        "本文の見出しが ## から始まっている（# を使っていない）",
+        "リポジトリの実装に基づく具体的事実（vitesse-light/vitesse-dark、@shikijs/rehype、ビルド時処理など）が含まれ、事実誤りがない",
+        "npm run build が通ることを実際に確認している",
+        "太字崩れ（本文中に ** がそのまま残る）がないことを確認している",
+        "文体がです・ます調で統一されている"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "ambiguous-request-needs-clarification",
+      "prompt": "Dev Containerについて記事書いて",
+      "expected_output": "いきなり書き始めず、読者・伝えたいこと・範囲などを確認するか、構成案を先に提示する。推測で設計意図を断定しない。",
+      "files": [],
+      "assertions": [
+        "いきなり全文を書き切らず、ユーザーへの確認事項（読者・伝えたいこと・範囲など）を明示している",
+        "devcontainer.json の実際の内容（Pythonイメージ・拡張機能・postCreateCommandなど）を調査している",
+        "「なぜDev Containerを導入したか」という意図を、確認事項として扱うか根拠を示しており、推測で断定していない",
+        "記事または構成案が、このブログの規約（1記事1フォルダ・frontmatter・##見出し）に沿っている"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "edit-existing-article",
+      "prompt": "about-this-blogの記事に、Mermaidで図が書けることを追記してください。",
+      "expected_output": "既存記事の現状を確認したうえで追記し、冒頭の趣旨や既存の節との整合性が保たれている。ビルド検証と太字崩れチェックが行われる。",
+      "files": [],
+      "assertions": [
+        "既存記事 about-this-blog の現状を確認したうえで追記している",
+        "追記内容が既存の節構成・文体と整合しており、冒頭の趣旨や既存記述と矛盾しない",
+        "Mermaidがビルド時にSVG化される（クライアントで描画しない）という事実が正しく書かれている",
+        "npm run build が通ることを実際に確認している",
+        "太字崩れがないことを確認している"
+      ]
+    }
+  ]
+}
