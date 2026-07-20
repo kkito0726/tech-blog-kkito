@@ -4,3 +4,6 @@ dist/
 .DS_Store
 *.local
 coverage/
+
+# スキル評価の実行結果（成果物は各PRで共有すれば足りるため追跡しない）
+write-blog-post-workspace/
