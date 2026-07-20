@@ -53,14 +53,14 @@ conduction_velocity = mea.calculator.conduction_velocity(peak_index, ch1=9, ch2=
 
 `PyMEA` のインスタンスが、役割ごとのオブジェクトを束ねる形になっています。
 
-| オブジェクト | 役割 |
-| --- | --- |
-| `data` (MEA) | 計測データの保持 |
-| `fig` (FigMEA) | グラフ描画 |
-| `calculator` (Calculator) | 数値計算 |
-| `electrode` (Electrode) | 電極の位置情報 |
+| オブジェクト              | 役割             |
+| ------------------------- | ---------------- |
+| `data` (MEA)              | 計測データの保持 |
+| `fig` (FigMEA)            | グラフ描画       |
+| `calculator` (Calculator) | 数値計算         |
+| `electrode` (Electrode)   | 電極の位置情報   |
 
-描画は64電極の一覧表示、単一電極の波形、ラスタープロット、2D/3Dカラーマップなどに対応しています。ノイズ除去も、心筋の強〜中信号用・微弱信号用・神経用といったプリセットを用意し、条件に応じて選ぶだけで済むようにしました。
+描画は64電極の一覧表示、単一電極の波形、ラスタープロット、2D/3Dカラーマップなどに対応しています。
 
 ## アーキテクチャ
 
@@ -104,7 +104,7 @@ mea2npz data.hed -start 30 -end 60 -dtype int16 -distance 450
 
 引数で完結するので、シェルのループに載せてまとめて変換することもできます。「解析はライブラリで、定型作業はCLIで」と役割を分けたことで、どちらも本来やりたいことに素直な形になりました。
 
-面白いのは、このGo製ツールも `cmd/` + `internal/{domain, usecase, infrastructure, interface/cli}` という構成で、**Python側と同じレイヤー分割**にしていることです。言語が違っても設計の考え方を揃えておくと、行き来するときの認知コストが下がります。
+このGo製ツールも `cmd/` + `internal/{domain, usecase, infrastructure, interface/cli}` という構成で、**Python側と同じレイヤー分割**にしています。言語が違っても設計の考え方を揃えておくと、行き来するときの認知コストが下がります。
 
 なお `int16` で保存するとサイズは約半分になりますが、ドキュメントには「**元の計測生データは必ずバックアップとして保持し、削除しないこと**」と明記しています。研究データは失われたら取り返しがつきません。便利さを提供するツールほど、こうした注意書きをはっきり書いておくべきだと考えています。
 
@@ -124,7 +124,12 @@ mea2npz data.hed -start 30 -end 60 -dtype int16 -distance 450
   "postCreateCommand": "pip install -r requirements.txt && pip install -e .",
   "customizations": {
     "vscode": {
-      "extensions": ["ms-python.python", "charliermarsh.ruff", "ms-toolsai.jupyter", "marp-team.marp-vscode"]
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "ms-toolsai.jupyter",
+        "marp-team.marp-vscode"
+      ]
     }
   }
 }
@@ -228,4 +233,6 @@ PowerPointを使わずMarkdownで書ける利点は大きく、**スライドも
 
 これらはすべて、**研究者が本来やりたいこと（研究）に集中できる状態を作る**という一点に向かっています。Dev Containerの動作の重さのように、まだ解ききれていない課題も残っていますが、そこも含めて改善を続けていくつもりです。
 
-ソースコードは [GitHub](https://github.com/kkito0726/MEA_modules) で公開しています。MEA計測に関わっている方の役に立てば嬉しいです。
+ソースコードは [GitHub](https://github.com/kkito0726/MEA_modules) で公開しています。
+
+最後まで読んでいただきありがとうございました！！
