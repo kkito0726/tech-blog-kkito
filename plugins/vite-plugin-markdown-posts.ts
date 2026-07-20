@@ -13,6 +13,7 @@ import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
 import type { Plugin } from 'vite'
 import { z } from 'zod'
+import { isRootRelativeHref } from '../src/lib/postCollection'
 import type { PostFrontmatter, TocItem } from '../src/types/post'
 import { buildMermaidWrapperHtml, renderMermaidDiagrams } from './mermaid-renderer'
 
@@ -92,6 +93,28 @@ function rehypeResolveImages(images: string[], markdownDir: string, file: string
 }
 
 /**
+ * 本文中のルート相対リンク（/posts/... など）を検出してビルドを失敗させるrehypeプラグイン。
+ *
+ * このサイトはGitHub Pagesのサブパス（/tech-blog-kkito/）で配信されるが、
+ * Markdownに直接書いたリンクはViteのbaseが付かず素通しで出力される。
+ * その結果 /posts/foo/ はドメイン直下を指してしまい、本番でだけ404になる。
+ * ローカルのプレビューでもビルドでも気づけないため、ここで弾く。
+ */
+function rehypeCheckLinks(file: string) {
+  return () => (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      if (node.tagName !== 'a' || typeof node.properties?.href !== 'string') return
+      const href = node.properties.href
+      if (!isRootRelativeHref(href)) return
+      throw new Error(
+        `[markdown-posts] ${file}: ルート相対リンク "${href}" は本番（GitHub Pages）で404になります。\n` +
+          `  記事間のリンクは相対パスで書いてください（例: ../<slug>/ ）。外部サイトは https:// から書いてください。`,
+      )
+    })
+  }
+}
+
+/**
  * ```mermaid コードブロックを抽出し、プレースホルダーのテキストノードに置き換える
  * rehypeプラグイン。実際のSVG化はunifiedのパイプライン外（非同期）で行うため、
  * ここではソースコードの回収と印付けのみを行う。
@@ -158,6 +181,7 @@ export function markdownPostsPlugin(): Plugin {
         .use(rehypeSlug)
         .use(rehypeCollectToc(toc))
         .use(rehypeResolveImages(images, dirname(filepath), filepath))
+        .use(rehypeCheckLinks(filepath))
         .use(rehypeExtractMermaid(diagrams))
         .use(rehypeShiki, {
           themes: { light: 'vitesse-light', dark: 'vitesse-dark' },
