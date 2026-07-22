@@ -45,15 +45,32 @@ export function sortPostsByDateDesc<T extends SortableEntry>(entries: readonly T
 }
 
 /**
- * 本番で404になるルート相対リンク（/posts/... など）かどうかを判定する。
+ * 記事本文の相対リンク（../<slug>/ など）を、base付きの絶対パスへ解決する。
  *
- * このサイトはGitHub Pagesのサブパス（/tech-blog-kkito/）配信だが、
- * Markdownに直接書いたリンクにはViteのbaseが付かないため、
- * ルート相対で書くとドメイン直下を指してしまい本番でだけ壊れる。
- * プロトコル相対（//example.com）は外部リンクなので対象外。
+ * 記事は `${base}posts/<slug>/` で配信される。相対リンクをそのまま出力すると、
+ * 解決の起点が「今いるページのURLの末尾スラッシュの有無」に左右される。
+ * 一覧からクリックした直後のURLは末尾スラッシュなし（/posts/mea-viewer）に
+ * なるため、../foo/ が posts/ ごと1階層余計に上がって 404 になる。
+ * これを避けるため、記事自身のURLを起点に絶対パスへ畳んでおく。
+ *
+ * base・外部URL・アンカー・ルート相対は対象外（そのまま返す）。
  */
-export function isRootRelativeHref(href: string): boolean {
-  return href.startsWith('/') && !href.startsWith('//')
+export function resolvePostHref(href: string, base: string, slug: string): string {
+  if (!/^\.\.?\//.test(href)) return href
+  const origin = 'https://blog.invalid'
+  const from = new URL(`${base}posts/${slug}/`, origin)
+  return new URL(href, from).pathname
+}
+
+/**
+ * 本番で404になるルート相対リンクかどうかを判定する。
+ *
+ * `/` から始まるがサイトのbase（/tech-blog-kkito/）で始まらないリンクは、
+ * ドメイン直下を指してしまい本番でだけ壊れる。base付きの絶対パスや
+ * プロトコル相対（//example.com）は正しいので対象外。
+ */
+export function isBrokenRootRelativeHref(href: string, base: string): boolean {
+  return href.startsWith('/') && !href.startsWith('//') && !href.startsWith(base)
 }
 
 /** draft記事を除外した新しい配列を返す。includeDraftsがtrue（開発時）はそのまま返す（REQ-102） */

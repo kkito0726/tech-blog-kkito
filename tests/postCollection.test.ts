@@ -3,9 +3,12 @@ import {
   assertUniqueSlugs,
   deriveSlug,
   excludeDrafts,
-  isRootRelativeHref,
+  isBrokenRootRelativeHref,
+  resolvePostHref,
   sortPostsByDateDesc,
 } from '../src/lib/postCollection'
+
+const BASE = '/tech-blog-kkito/'
 
 describe('deriveSlug', () => {
   it('フォルダ名から日付プレフィックスを除いたスラッグを返す（REQ-012）', () => {
@@ -80,21 +83,41 @@ describe('excludeDrafts', () => {
   })
 })
 
-describe('isRootRelativeHref', () => {
-  it('ルート相対リンクを検出する（baseが付かず本番で404になるため）', () => {
-    expect(isRootRelativeHref('/posts/foo/')).toBe(true)
-    expect(isRootRelativeHref('/')).toBe(true)
+describe('resolvePostHref', () => {
+  it('記事間の相対リンクをbase付きの絶対パスへ解決する', () => {
+    // mea-viewer記事(../で1つ上)からpymea記事へ
+    expect(resolvePostHref('../pymea-mea-analysis/', BASE, 'mea-viewer')).toBe(
+      '/tech-blog-kkito/posts/pymea-mea-analysis/',
+    )
   })
 
-  it('相対パスは許可する', () => {
-    expect(isRootRelativeHref('../foo/')).toBe(false)
-    expect(isRootRelativeHref('./image.png')).toBe(false)
+  it('末尾スラッシュの有無に関係なく同じ絶対パスになる（脆さの解消）', () => {
+    expect(resolvePostHref('../foo/', BASE, 'bar')).toBe('/tech-blog-kkito/posts/foo/')
   })
 
-  it('外部URL・プロトコル相対・アンカーは許可する', () => {
-    expect(isRootRelativeHref('https://example.com/posts/')).toBe(false)
-    expect(isRootRelativeHref('//example.com/posts/')).toBe(false)
-    expect(isRootRelativeHref('#heading')).toBe(false)
-    expect(isRootRelativeHref('mailto:a@example.com')).toBe(false)
+  it('相対リンクでないものはそのまま返す', () => {
+    expect(resolvePostHref('https://example.com/', BASE, 'x')).toBe('https://example.com/')
+    expect(resolvePostHref('#heading', BASE, 'x')).toBe('#heading')
+    expect(resolvePostHref('/posts/foo/', BASE, 'x')).toBe('/posts/foo/')
+    expect(resolvePostHref('mailto:a@example.com', BASE, 'x')).toBe('mailto:a@example.com')
+  })
+})
+
+describe('isBrokenRootRelativeHref', () => {
+  it('base無しのルート相対リンクを検出する（本番で404になるため）', () => {
+    expect(isBrokenRootRelativeHref('/posts/foo/', BASE)).toBe(true)
+    expect(isBrokenRootRelativeHref('/', BASE)).toBe(true)
+  })
+
+  it('base付きの絶対パスは正しいので許可する', () => {
+    expect(isBrokenRootRelativeHref('/tech-blog-kkito/posts/foo/', BASE)).toBe(false)
+  })
+
+  it('相対パス・外部URL・プロトコル相対・アンカーは許可する', () => {
+    expect(isBrokenRootRelativeHref('../foo/', BASE)).toBe(false)
+    expect(isBrokenRootRelativeHref('https://example.com/posts/', BASE)).toBe(false)
+    expect(isBrokenRootRelativeHref('//example.com/posts/', BASE)).toBe(false)
+    expect(isBrokenRootRelativeHref('#heading', BASE)).toBe(false)
+    expect(isBrokenRootRelativeHref('mailto:a@example.com', BASE)).toBe(false)
   })
 })
