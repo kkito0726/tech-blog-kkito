@@ -13,8 +13,13 @@ import { unified } from 'unified'
 import { visit } from 'unist-util-visit'
 import type { Plugin } from 'vite'
 import { z } from 'zod'
-import { isRootRelativeHref } from '../src/lib/postCollection'
+import {
+  deriveSlug,
+  isBrokenRootRelativeHref,
+  resolvePostHref,
+} from '../src/lib/postCollection'
 import type { PostFrontmatter, TocItem } from '../src/types/post'
+import { basename } from 'node:path'
 import { buildMermaidWrapperHtml, renderMermaidDiagrams } from './mermaid-renderer'
 
 const POST_FILE_PATTERN = /\/content\/posts\/[^/]+\/index\.md$/
@@ -93,19 +98,37 @@ function rehypeResolveImages(images: string[], markdownDir: string, file: string
 }
 
 /**
+ * 記事本文の相対リンク（../<slug>/ など）を、base付きの絶対パスへ解決するrehypeプラグイン。
+ *
+ * 相対リンクは「今いるページのURLの末尾スラッシュの有無」で解決結果が変わる。
+ * 一覧からクリックした直後は末尾スラッシュなしのURL（/posts/mea-viewer）になり、
+ * ../foo/ が posts/ ごと1階層余計に上がって 404 になる。記事自身のURLを起点に
+ * 絶対パスへ畳んでおくことで、どの入り方でも正しく解決されるようにする。
+ */
+function rehypeResolveLinks(base: string, slug: string) {
+  return () => (tree: Root) => {
+    visit(tree, 'element', (node: Element) => {
+      if (node.tagName !== 'a' || typeof node.properties?.href !== 'string') return
+      node.properties.href = resolvePostHref(node.properties.href, base, slug)
+    })
+  }
+}
+
+/**
  * 本文中のルート相対リンク（/posts/... など）を検出してビルドを失敗させるrehypeプラグイン。
  *
  * このサイトはGitHub Pagesのサブパス（/tech-blog-kkito/）で配信されるが、
- * Markdownに直接書いたリンクはViteのbaseが付かず素通しで出力される。
- * その結果 /posts/foo/ はドメイン直下を指してしまい、本番でだけ404になる。
- * ローカルのプレビューでもビルドでも気づけないため、ここで弾く。
+ * Markdownに直接書いた `/posts/foo/` はViteのbaseが付かず、ドメイン直下を
+ * 指してしまい本番でだけ404になる。ローカルのプレビューでもビルドでも
+ * 気づけないため、ここで弾く。相対リンクは rehypeResolveLinks が base付きの
+ * 絶対パスへ解決済みなので、それらはこのチェックを通過する。
  */
-function rehypeCheckLinks(file: string) {
+function rehypeCheckLinks(base: string, file: string) {
   return () => (tree: Root) => {
     visit(tree, 'element', (node: Element) => {
       if (node.tagName !== 'a' || typeof node.properties?.href !== 'string') return
       const href = node.properties.href
-      if (!isRootRelativeHref(href)) return
+      if (!isBrokenRootRelativeHref(href, base)) return
       throw new Error(
         `[markdown-posts] ${file}: ルート相対リンク "${href}" は本番（GitHub Pages）で404になります。\n` +
           `  記事間のリンクは相対パスで書いてください（例: ../<slug>/ ）。外部サイトは https:// から書いてください。`,
@@ -161,15 +184,21 @@ function buildHtmlExpression(html: string): string {
  * 変換はすべてビルド時（Node側）に完結し、クライアントにはHTML文字列のみ届く。
  */
 export function markdownPostsPlugin(): Plugin {
+  // Viteのbase（GitHub Pagesのサブパス）。リンク解決に使う。configResolvedで確定する
+  let base = '/'
   return {
     name: 'blog:markdown-posts',
     enforce: 'pre',
+    configResolved(config) {
+      base = config.base
+    },
     async transform(code, id) {
       const [filepath] = id.split('?')
       if (!POST_FILE_PATTERN.test(filepath)) return null
 
       const { data, content } = matter(code)
       const frontmatter = parseFrontmatter(data, filepath)
+      const slug = deriveSlug(basename(dirname(filepath)))
       const toc: TocItem[] = []
       const images: string[] = []
       const diagrams: string[] = []
@@ -181,7 +210,8 @@ export function markdownPostsPlugin(): Plugin {
         .use(rehypeSlug)
         .use(rehypeCollectToc(toc))
         .use(rehypeResolveImages(images, dirname(filepath), filepath))
-        .use(rehypeCheckLinks(filepath))
+        .use(rehypeResolveLinks(base, slug))
+        .use(rehypeCheckLinks(base, filepath))
         .use(rehypeExtractMermaid(diagrams))
         .use(rehypeShiki, {
           themes: { light: 'vitesse-light', dark: 'vitesse-dark' },
