@@ -26,7 +26,11 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=M+PLUS+1+Code:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <title>kkito blog</title>
+    <!--
+      title は各ページが vite-react-ssg の <Head> で設定し、ビルド時に
+      静的HTMLへ焼き込まれる。ここに固定の <title> を置くと、焼き込まれた
+      titleと二重になり不正なHTMLになるため置かない。
+    -->
   </head>
   <body>
     <div id="root"><!--app-html--></div>
