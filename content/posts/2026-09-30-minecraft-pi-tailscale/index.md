@@ -25,7 +25,7 @@ flowchart LR
     subgraph tailnet["tailnet（Tailscale）"]
         PC["手元のPC<br/>Minecraftクライアント / ブラウザ"]
         subgraph Pi["Raspberry Pi 5（4GB）"]
-            MC["mc コンテナ<br/>Paper :25565"]
+            MC["Minecraft コンテナ<br/>Paper :25565"]
             AD["mcadmind<br/>管理画面 :8787"]
             RC["rcon-cli<br/>（コンテナ内）"]
         end
