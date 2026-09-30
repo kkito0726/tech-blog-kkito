@@ -1,5 +1,5 @@
 ---
-title: Raspberry Pi×Tailscaleでマインクラフト自宅サーバー - 管理画面も自作した
+title: Raspberry Pi×Tailscaleでマインクラフトサーバー - 管理画面も自作した
 date: 2026-09-30
 description: Raspberry Pi 5 と Tailscale で、ルーターのポートを開けずに外から入れる Minecraft サーバーを動かしています。バックアップや復元、ワールドの切り替えをブラウザから行う管理画面を Go と React で自作した話です。
 ---
