@@ -25,15 +25,17 @@ flowchart LR
     subgraph tailnet["tailnet（Tailscale）"]
         PC["手元のPC<br/>Minecraftクライアント / ブラウザ"]
         subgraph Pi["Raspberry Pi 5（4GB）"]
-            MC["Minecraft コンテナ<br/>Paper :25565"]
-            AD["mcadmind<br/>管理画面 :8787"]
-            RC["rcon-cli<br/>（コンテナ内）"]
+            AD["mcadmind<br/>管理画面 :8787<br/>（ホストで常駐）"]
+            subgraph MCC["Minecraft コンテナ"]
+                MC["Paper サーバー<br/>:25565"]
+                RC["rcon-cli"]
+            end
         end
     end
     PC -->|ゲーム| MC
     PC -->|ブラウザ| AD
     AD -->|docker compose exec| RC
-    RC -->|RCON :25575| MC
+    RC -->|"RCON :25575<br/>コンテナ内で完結"| MC
 ```
 
 | 役割 | 使っているもの |
