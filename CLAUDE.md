@@ -99,7 +99,7 @@ Shikiはトークンごとに `<span>` を出す。そこに背景色を指定�
 
 ### 6. 記事本文のリンクはルート相対で書かない
 
-GitHub Pagesのサブパス配信のため、Markdownに直接書いた `/posts/foo/` には `base` が付かず、本番でだけ404になる。記事間は相対パス（`../<slug>/`）で書く。ビルド時に `rehypeCheckLinks` が検出してエラーにする。
+記事間は相対パス（`../<slug>/`）で書く。サブパス配信（`base` が `/<repo>/`）だった頃は、Markdownに直接書いた `/posts/foo/` に `base` が付かず本番でだけ404になっていた。いまは独自ドメインの直下（`base: '/'`）なのでルート相対でも壊れないが、配信先が変わっても壊れないよう相対パスに統一する。サブパス配信に戻すと、ビルド時に `rehypeCheckLinks` がルート相対リンクを検出してエラーにする。
 
 相対パスは `rehypeResolveLinks` が `base` 付きの絶対パスへ解決する。これは末尾スラッシュ問題への対策でもある。記事一覧の `<Link to="/posts/slug">` は末尾スラッシュなしのURLを作るため、相対リンクをそのまま出すと一覧クリック経由で `posts/` が抜けて404になる。解決済みなら入り方に依らず正しく遷移する。**リンク検証は直URLではなく一覧クリック経由で行うこと**（直URLは末尾スラッシュ付きなので問題が再現しない）。
 
@@ -109,7 +109,8 @@ GitHub Pagesのサブパス配信のため、Markdownに直接書いた `/posts/
 
 ## 設定まわり
 
-- **base path**: GitHub Pagesのサブパス配信のため `vite.config.ts` に `base: '/tech-blog-kkito/'`。リポジトリ名を変えたら要更新
+- **独自ドメイン**: `https://techblog.kkito.stream/` で配信。ドメインはリポジトリの Settings → Pages で設定している（Actions でデプロイしているので `CNAME` ファイルは不要）
+- **base path**: ドメイン直下で配信するため `vite.config.ts` は `base: '/'`。OGP用の絶対URLは `src/config/site.ts` の `siteUrl`。**ドメインを変えたら両方を見直す**。`<user>.github.io/<repo>/` に戻す場合は `base: '/<repo>/'` にしないとCSS/JSが404になる
 - **URL形式**: `ssgOptions.dirStyle: 'nested'` で `/posts/<slug>/` を出力
 - **404**: `scripts/copy-404.mjs`（postbuild）が `dist/404.html` を配置。GitHub Pagesの仕様上必要
 - **Chromium**: `postinstall` で `playwright install --with-deps chromium` が走る。MermaidのSVG化に必要
