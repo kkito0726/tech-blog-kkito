@@ -6,7 +6,7 @@ import { markdownPostsPlugin } from './plugins/vite-plugin-markdown-posts'
 
 export default defineConfig({
   // 独自ドメイン（techblog.kkito.stream）の直下で配信するため '/'。
-  // GitHub Pagesの既定URL（<user>.github.io/<repo>/）に戻す場合は '/<repo>/' にする
+  // GitHub Pagesの既定URL（<user>.github.io/<repo>/）で配信する場合は '/<repo>/' にする
   base: '/',
   plugins: [markdownPostsPlugin(), react(), tailwindcss()],
   // vite-react-ssg固有のオプション（REQ-012: /posts/<slug>/ 形式で出力）

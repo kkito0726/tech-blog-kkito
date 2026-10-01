@@ -123,8 +123,7 @@ function rehypeResolveLinks(base: string, slug: string) {
  * 相対リンクは rehypeResolveLinks が base付きの絶対パスへ解決済みなので、
  * それらはこのチェックを通過する。
  *
- * 独自ドメインの直下（base が '/'）で配信している間は、どのルート相対リンクも
- * base で始まるため何も弾かない。サブパス配信に戻したときのために残している。
+ * base が '/' のときは、どのルート相対リンクも base で始まるため何も弾かない。
  */
 function rehypeCheckLinks(base: string, file: string) {
   return () => (tree: Root) => {
