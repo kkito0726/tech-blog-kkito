@@ -117,11 +117,14 @@ function rehypeResolveLinks(base: string, slug: string) {
 /**
  * 本文中のルート相対リンク（/posts/... など）を検出してビルドを失敗させるrehypeプラグイン。
  *
- * このサイトはGitHub Pagesのサブパス（/tech-blog-kkito/）で配信されるが、
- * Markdownに直接書いた `/posts/foo/` はViteのbaseが付かず、ドメイン直下を
- * 指してしまい本番でだけ404になる。ローカルのプレビューでもビルドでも
- * 気づけないため、ここで弾く。相対リンクは rehypeResolveLinks が base付きの
- * 絶対パスへ解決済みなので、それらはこのチェックを通過する。
+ * サイトをサブパス（例: /<repo>/）で配信する場合、Markdownに直接書いた
+ * `/posts/foo/` はViteのbaseが付かず、ドメイン直下を指してしまい本番でだけ
+ * 404になる。ローカルのプレビューでもビルドでも気づけないため、ここで弾く。
+ * 相対リンクは rehypeResolveLinks が base付きの絶対パスへ解決済みなので、
+ * それらはこのチェックを通過する。
+ *
+ * 独自ドメインの直下（base が '/'）で配信している間は、どのルート相対リンクも
+ * base で始まるため何も弾かない。サブパス配信に戻したときのために残している。
  */
 function rehypeCheckLinks(base: string, file: string) {
   return () => (tree: Root) => {

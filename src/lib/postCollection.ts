@@ -65,7 +65,7 @@ export function resolvePostHref(href: string, base: string, slug: string): strin
 /**
  * 本番で404になるルート相対リンクかどうかを判定する。
  *
- * `/` から始まるがサイトのbase（/tech-blog-kkito/）で始まらないリンクは、
+ * `/` から始まるがサイトのbaseで始まらないリンクは、
  * ドメイン直下を指してしまい本番でだけ壊れる。base付きの絶対パスや
  * プロトコル相対（//example.com）は正しいので対象外。
  */

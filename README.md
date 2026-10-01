@@ -2,7 +2,7 @@
 
 Vite + React + TypeScript で自作した個人テックブログ。
 
-**公開URL**: https://kkito0726.github.io/tech-blog-kkito/
+**公開URL**: https://techblog.kkito.stream/
 
 Markdownファイルを1枚置いて `main` にpushするだけで、GitHub Actionsがビルドして GitHub Pages へ公開します。
 
